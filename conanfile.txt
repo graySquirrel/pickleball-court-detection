@@ -1,5 +1,9 @@
 [requires]
-opencv/3.4.3@conan/stable
+ffmpeg/4.4.3
+opencv/4.5.3
+zlib/1.2.13
+libpng/1.6.38
+libwebp/1.2.4
 
 [generators]
 cmake
