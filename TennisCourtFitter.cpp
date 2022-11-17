@@ -8,7 +8,6 @@
 #include "DebugHelpers.h"
 #include "geometry.h"
 
-
 using namespace cv;
 
 bool TennisCourtFitter::debug = false;
@@ -16,24 +15,20 @@ const std::string TennisCourtFitter::windowName = "TennisCourtFitter";
 
 TennisCourtFitter::Parameters::Parameters()
 {
-
 }
 
 TennisCourtFitter::TennisCourtFitter()
-  : TennisCourtFitter(Parameters())
+    : TennisCourtFitter(Parameters())
 {
-
 }
-
 
 TennisCourtFitter::TennisCourtFitter(TennisCourtFitter::Parameters p)
-  : parameters(p)
+    : parameters(p)
 {
-
 }
 
-TennisCourtModel TennisCourtFitter::run(const std::vector<Line>& lines, const Mat& binaryImage,
-  const Mat& rgbImage)
+TennisCourtModel TennisCourtFitter::run(const std::vector<Line> &lines, const Mat &binaryImage,
+                                        const Mat &rgbImage)
 {
   TimeMeasurement::start("TennisCourtFitter::run");
 
@@ -66,11 +61,10 @@ TennisCourtModel TennisCourtFitter::run(const std::vector<Line>& lines, const Ma
   return bestModel;
 }
 
-
-void TennisCourtFitter::getHorizontalAndVerticalLines(const std::vector<Line>& lines,
-  std::vector<Line>& hLines, std::vector<Line>& vLines, const cv::Mat& rgbImage)
+void TennisCourtFitter::getHorizontalAndVerticalLines(const std::vector<Line> &lines,
+                                                      std::vector<Line> &hLines, std::vector<Line> &vLines, const cv::Mat &rgbImage)
 {
-  for (auto& line: lines)
+  for (auto &line : lines)
   {
     if (line.isVertical())
     {
@@ -93,15 +87,14 @@ void TennisCourtFitter::getHorizontalAndVerticalLines(const std::vector<Line>& l
   }
 }
 
-
-void TennisCourtFitter::sortHorizontalLines(std::vector<Line>& hLines, const cv::Mat& rgbImage)
+void TennisCourtFitter::sortHorizontalLines(std::vector<Line> &hLines, const cv::Mat &rgbImage)
 {
   float x = rgbImage.cols / 2.0;
   sortLinesByDistanceToPoint(hLines, Point2f(x, 0));
 
   if (false)
   {
-    for (auto& line: hLines)
+    for (auto &line : hLines)
     {
       Mat image = rgbImage.clone();
       drawLine(line, image, Scalar(255, 0, 0));
@@ -110,14 +103,14 @@ void TennisCourtFitter::sortHorizontalLines(std::vector<Line>& hLines, const cv:
   }
 }
 
-void TennisCourtFitter::sortVerticalLines(std::vector<Line>& vLines, const cv::Mat& rgbImage)
+void TennisCourtFitter::sortVerticalLines(std::vector<Line> &vLines, const cv::Mat &rgbImage)
 {
   float y = rgbImage.rows / 2.0;
   sortLinesByDistanceToPoint(vLines, Point2f(0, y));
 
   if (false)
   {
-    for (auto& line: vLines)
+    for (auto &line : vLines)
     {
       Mat image = rgbImage.clone();
       drawLine(line, image, Scalar(0, 255, 0));
@@ -126,13 +119,12 @@ void TennisCourtFitter::sortVerticalLines(std::vector<Line>& vLines, const cv::M
   }
 }
 
-
-void TennisCourtFitter::findBestModelFit(const cv::Mat& binaryImage, const cv::Mat& rgbImage)
+void TennisCourtFitter::findBestModelFit(const cv::Mat &binaryImage, const cv::Mat &rgbImage)
 {
   float bestScore = GlobalParameters().initialFitScore;
-  for (auto& hLinePair: hLinePairs)
+  for (auto &hLinePair : hLinePairs)
   {
-    for (auto& vLinePair: vLinePairs)
+    for (auto &vLinePair : vLinePairs)
     {
       TennisCourtModel model;
       float score = model.fit(hLinePair, vLinePair, binaryImage, rgbImage);

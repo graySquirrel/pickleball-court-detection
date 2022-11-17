@@ -21,20 +21,16 @@ CourtLineCandidateDetector::Parameters::Parameters()
 }
 
 CourtLineCandidateDetector::CourtLineCandidateDetector()
-  : CourtLineCandidateDetector(Parameters())
+    : CourtLineCandidateDetector(Parameters())
 {
-
 }
-
 
 CourtLineCandidateDetector::CourtLineCandidateDetector(CourtLineCandidateDetector::Parameters p)
-  : parameters(p)
+    : parameters(p)
 {
-
 }
 
-
-std::vector<Line> CourtLineCandidateDetector::run(const cv::Mat& binaryImage, const cv::Mat& rgbImage)
+std::vector<Line> CourtLineCandidateDetector::run(const cv::Mat &binaryImage, const cv::Mat &rgbImage)
 {
   TimeMeasurement::start("CourtLineCandidateDetector::run");
 
@@ -58,8 +54,8 @@ std::vector<Line> CourtLineCandidateDetector::run(const cv::Mat& binaryImage, co
   return lines;
 }
 
-std::vector<Line> CourtLineCandidateDetector::extractLines(const cv::Mat& binaryImage,
-  const cv::Mat& rgbImage)
+std::vector<Line> CourtLineCandidateDetector::extractLines(const cv::Mat &binaryImage,
+                                                           const cv::Mat &rgbImage)
 {
   std::vector<cv::Point2f> tmpLines;
 
@@ -82,11 +78,10 @@ std::vector<Line> CourtLineCandidateDetector::extractLines(const cv::Mat& binary
   return lines;
 }
 
-
-void CourtLineCandidateDetector::refineLineParameters(std::vector<Line>& lines,
-  const Mat& binaryImage, const Mat& rgbImage)
+void CourtLineCandidateDetector::refineLineParameters(std::vector<Line> &lines,
+                                                      const Mat &binaryImage, const Mat &rgbImage)
 {
-  for (auto& line: lines)
+  for (auto &line : lines)
   {
     line = getRefinedParameters(line, binaryImage, rgbImage);
   }
@@ -98,13 +93,12 @@ void CourtLineCandidateDetector::refineLineParameters(std::vector<Line>& lines,
   }
 }
 
-bool lineEqual(const Line& a, const Line& b)
+bool lineEqual(const Line &a, const Line &b)
 {
   return a.isDuplicate(b);
 }
 
-
-bool CourtLineCandidateDetector::operator()(const Line& a, const Line& b)
+bool CourtLineCandidateDetector::operator()(const Line &a, const Line &b)
 {
   Mat tmpImage = image.clone();
   drawLine(a, tmpImage);
@@ -113,7 +107,7 @@ bool CourtLineCandidateDetector::operator()(const Line& a, const Line& b)
   return a.isDuplicate(b);
 }
 
-void CourtLineCandidateDetector::removeDuplicateLines(std::vector<Line>& lines, const cv::Mat& rgbImage)
+void CourtLineCandidateDetector::removeDuplicateLines(std::vector<Line> &lines, const cv::Mat &rgbImage)
 {
   image = rgbImage.clone();
   auto it = std::unique(lines.begin(), lines.end(), lineEqual);
@@ -127,19 +121,19 @@ void CourtLineCandidateDetector::removeDuplicateLines(std::vector<Line>& lines, 
   }
 }
 
-Line CourtLineCandidateDetector::getRefinedParameters(Line line, const Mat& binaryImage,
-  const cv::Mat& rgbImage)
+Line CourtLineCandidateDetector::getRefinedParameters(Line line, const Mat &binaryImage,
+                                                      const cv::Mat &rgbImage)
 {
   Mat A = getClosePointsMatrix(line, binaryImage, rgbImage);
   Mat X = Mat::zeros(1, 4, CV_32F);
   fitLine(A, X, DIST_L2, 0, 0.01, 0.01);
-  Point2f v(X.at<float>(0,0), X.at<float>(0,1));
-  Point2f p(X.at<float>(0,2), X.at<float>(0,3));
+  Point2f v(X.at<float>(0, 0), X.at<float>(0, 1));
+  Point2f p(X.at<float>(0, 2), X.at<float>(0, 3));
   return Line(p, v);
 }
 
-Mat CourtLineCandidateDetector::getClosePointsMatrix(Line line, const Mat& binaryImage,
-  const cv::Mat& rgbImage)
+Mat CourtLineCandidateDetector::getClosePointsMatrix(Line line, const Mat &binaryImage,
+                                                     const cv::Mat &rgbImage)
 {
   Mat M = Mat::zeros(0, 2, CV_32F);
 
@@ -154,7 +148,7 @@ Mat CourtLineCandidateDetector::getClosePointsMatrix(Line line, const Mat& binar
         float distance = line.getDistance(Point2f(x, y));
         if (distance < parameters.distanceThreshold)
         {
-//          drawPoint(Point2f(x, y), image, Scalar(255,0,0));
+          //          drawPoint(Point2f(x, y), image, Scalar(255,0,0));
           Mat point = Mat::zeros(1, 2, CV_32F);
           point.at<float>(0, 0) = x;
           point.at<float>(0, 1) = y;

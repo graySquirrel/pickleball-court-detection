@@ -23,18 +23,16 @@ CourtLinePixelDetector::Parameters::Parameters()
 }
 
 CourtLinePixelDetector::CourtLinePixelDetector()
-  : CourtLinePixelDetector(Parameters())
+    : CourtLinePixelDetector(Parameters())
 {
-
 }
 
 CourtLinePixelDetector::CourtLinePixelDetector(CourtLinePixelDetector::Parameters p)
-  : parameters(p)
+    : parameters(p)
 {
-
 }
 
-Mat CourtLinePixelDetector::run(const Mat& frame)
+Mat CourtLinePixelDetector::run(const Mat &frame)
 {
   TimeMeasurement::start("CourtLinePixelDetector::run");
 
@@ -54,10 +52,10 @@ Mat CourtLinePixelDetector::run(const Mat& frame)
   return image;
 }
 
-cv::Mat CourtLinePixelDetector::getLuminanceChannel(const cv::Mat& frame)
+cv::Mat CourtLinePixelDetector::getLuminanceChannel(const cv::Mat &frame)
 {
   Mat imgYCbCr;
-  cvtColor(frame, imgYCbCr, CV_RGB2YCrCb);
+  cvtColor(frame, imgYCbCr, COLOR_RGB2YCrCb);
   Mat luminanceChannel(frame.rows, frame.cols, CV_8UC1);
   const int from_to[2] = {0, 0};
   mixChannels(&frame, 1, &luminanceChannel, 1, from_to, 1);
@@ -72,7 +70,7 @@ cv::Mat CourtLinePixelDetector::getLuminanceChannel(const cv::Mat& frame)
   return luminanceChannel;
 }
 
-Mat CourtLinePixelDetector::detectLinePixels(const cv::Mat& image)
+Mat CourtLinePixelDetector::detectLinePixels(const cv::Mat &image)
 {
   Mat pixelImage(image.rows, image.cols, CV_8UC1, Scalar(GlobalParameters().bgValue));
 
@@ -80,7 +78,7 @@ Mat CourtLinePixelDetector::detectLinePixels(const cv::Mat& image)
   {
     for (unsigned int y = 0; y < image.rows; ++y)
     {
-      pixelImage.at<uchar>(y,x) = isLinePixel(image, x, y);
+      pixelImage.at<uchar>(y, x) = isLinePixel(image, x, y);
     }
   }
 
@@ -92,8 +90,7 @@ Mat CourtLinePixelDetector::detectLinePixels(const cv::Mat& image)
   return pixelImage;
 }
 
-
-uchar CourtLinePixelDetector::isLinePixel(const Mat& image, unsigned int x, unsigned int y)
+uchar CourtLinePixelDetector::isLinePixel(const Mat &image, unsigned int x, unsigned int y)
 {
   if (x < parameters.t || image.cols - x <= parameters.t)
   {
@@ -104,16 +101,16 @@ uchar CourtLinePixelDetector::isLinePixel(const Mat& image, unsigned int x, unsi
     return GlobalParameters().bgValue;
   }
 
-  uchar value = image.at<uchar>(y,x);
+  uchar value = image.at<uchar>(y, x);
   if (value < parameters.threshold)
   {
     return GlobalParameters().bgValue;
   }
 
-  uchar topValue = image.at<uchar>(y-parameters.t, x);
-  uchar lowerValue = image.at<uchar>(y+parameters.t, x);
-  uchar leftValue = image.at<uchar>(y,x-parameters.t);
-  uchar rightValue = image.at<uchar>(y,x+parameters.t);
+  uchar topValue = image.at<uchar>(y - parameters.t, x);
+  uchar lowerValue = image.at<uchar>(y + parameters.t, x);
+  uchar leftValue = image.at<uchar>(y, x - parameters.t);
+  uchar rightValue = image.at<uchar>(y, x + parameters.t);
 
   if ((value - leftValue > parameters.diffThreshold) && (value - rightValue > parameters.diffThreshold))
   {
@@ -128,8 +125,7 @@ uchar CourtLinePixelDetector::isLinePixel(const Mat& image, unsigned int x, unsi
   return GlobalParameters().bgValue;
 }
 
-
-Mat CourtLinePixelDetector::filterLinePixels(const Mat& binaryImage, const Mat& luminanceImage)
+Mat CourtLinePixelDetector::filterLinePixels(const Mat &binaryImage, const Mat &luminanceImage)
 {
   Mat dx2, dxy, dy2;
   computeStructureTensorElements(luminanceImage, dx2, dxy, dy2);
@@ -138,19 +134,19 @@ Mat CourtLinePixelDetector::filterLinePixels(const Mat& binaryImage, const Mat& 
   {
     for (unsigned int y = 0; y < binaryImage.rows; ++y)
     {
-      uchar value = binaryImage.at<uchar>(y,x);
+      uchar value = binaryImage.at<uchar>(y, x);
       if (value == GlobalParameters().fgValue)
       {
         Mat t(2, 2, CV_32F);
-        t.at<float>(0, 0) = dx2.at<float>(y,x);
-        t.at<float>(0, 1) = dxy.at<float>(y,x);
-        t.at<float>(1, 0) = dxy.at<float>(y,x);
-        t.at<float>(1, 1) = dy2.at<float>(y,x);
+        t.at<float>(0, 0) = dx2.at<float>(y, x);
+        t.at<float>(0, 1) = dxy.at<float>(y, x);
+        t.at<float>(1, 0) = dxy.at<float>(y, x);
+        t.at<float>(1, 1) = dy2.at<float>(y, x);
         Mat l;
         eigen(t, l);
-        if (l.at<float>(0,0) > 4* l.at<float>(0,1))
+        if (l.at<float>(0, 0) > 4 * l.at<float>(0, 1))
         {
-          outputImage.at<uchar>(y,x) = GlobalParameters().fgValue;
+          outputImage.at<uchar>(y, x) = GlobalParameters().fgValue;
         }
       }
     }
@@ -164,12 +160,11 @@ Mat CourtLinePixelDetector::filterLinePixels(const Mat& binaryImage, const Mat& 
   return outputImage;
 }
 
-
-void CourtLinePixelDetector::computeStructureTensorElements(const cv::Mat& image, cv::Mat& dx2, cv::Mat& dxy, cv::Mat& dy2)
+void CourtLinePixelDetector::computeStructureTensorElements(const cv::Mat &image, cv::Mat &dx2, cv::Mat &dxy, cv::Mat &dy2)
 {
   Mat floatImage, dx, dy;
   image.convertTo(floatImage, CV_32F);
-  GaussianBlur(floatImage, floatImage, Size(5,5), 0);
+  GaussianBlur(floatImage, floatImage, Size(5, 5), 0);
   Sobel(floatImage, dx, CV_32F, 1, 0, parameters.gradientKernelSize);
   Sobel(floatImage, dy, CV_32F, 0, 1, parameters.gradientKernelSize);
   multiply(dx, dx, dx2);

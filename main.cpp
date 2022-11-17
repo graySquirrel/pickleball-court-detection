@@ -9,8 +9,10 @@
 
 using namespace cv;
 
-int main(int argc, char** argv)
+int main(int argc, char **argv)
 {
+  //  std::cout << cv::getBuildInformation() << std::endl;
+
   TimeMeasurement::debug = false;
   CourtLinePixelDetector::debug = false;
   CourtLineCandidateDetector::debug = false;
@@ -35,8 +37,8 @@ int main(int argc, char** argv)
   }
   printVideoInfo(vc);
   Mat frame;
-  int frameIndex = int(vc.get(CV_CAP_PROP_FRAME_COUNT)) / 2;
-  vc.set(CV_CAP_PROP_POS_FRAMES, frameIndex);
+  int frameIndex = int(vc.get(CAP_PROP_FRAME_COUNT)) / 2;
+  vc.set(CAP_PROP_POS_FRAMES, frameIndex);
   if (!vc.read(frame))
   {
     std::cerr << "Failed to read frame with index " << frameIndex << std::endl;
@@ -68,14 +70,12 @@ int main(int argc, char** argv)
       model.writeToFile(outFilename);
       std::cout << "Result written to " << outFilename << std::endl;
     }
-
   }
-  catch (std::runtime_error& e)
+  catch (std::runtime_error &e)
   {
     std::cout << "Processing error: " << e.what() << std::endl;
     return 3;
   }
-
 
   return 0;
 }

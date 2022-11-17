@@ -8,20 +8,18 @@
 
 using namespace std;
 
-
 bool TimeMeasurement::enabled = false;
 
 bool TimeMeasurement::debug = false;
 
 map<string, TimeMeasurement::TimePoint> TimeMeasurement::startPoints = map<string, TimeMeasurement::TimePoint>();
 
-void TimeMeasurement::start(const std::string& name)
+void TimeMeasurement::start(const std::string &name)
 {
   startPoints[name] = chrono::high_resolution_clock::now();
 }
 
-
-float TimeMeasurement::stop(const std::string& name)
+float TimeMeasurement::stop(const std::string &name)
 {
   auto end = chrono::high_resolution_clock::now();
   chrono::duration<double> elapsed_s = end - startPoints[name];

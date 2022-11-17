@@ -2,7 +2,7 @@
 // Created by Chlebus, Grzegorz on 28.08.17.
 // Copyright (c) Chlebus, Grzegorz. All rights reserved.
 //
-
+#include <fstream>
 #include "TennisCourtModel.h"
 #include "GlobalParameters.h"
 #include "DebugHelpers.h"
@@ -15,37 +15,45 @@ TennisCourtModel::TennisCourtModel()
 {
   Point2f hVector(1, 0);
   const Line upperBaseLine = Line(Point2f(0, 0), hVector);
-  const Line upperServiceLine = Line(Point2f(0, 5.49), hVector);
-  const Line netLine = Line(Point2f(0, 11.89), hVector);
-  const Line lowerServiceLine = Line(Point2f(0, 18.29), hVector);
-  const Line lowerBaseLine = Line(Point2f(0, 23.78), hVector);
+  const Line upperServiceLine = Line(Point2f(0, 4.57), hVector);
+  const Line netLine = Line(Point2f(0, 6.71), hVector);
+  const Line lowerServiceLine = Line(Point2f(0, 8.84), hVector);
+  const Line lowerBaseLine = Line(Point2f(0, 13.41), hVector);
   hLines = {
-    upperBaseLine, upperServiceLine, netLine, lowerServiceLine, lowerBaseLine
-  };
+      upperBaseLine,
+      upperServiceLine,
+      netLine,
+      lowerServiceLine,
+      lowerBaseLine};
 
   Point2f vVector(0, 1);
   const Line leftSideLine = Line(Point2f(0, 0), vVector);
-  const Line leftSinglesLine = Line(Point2f(1.37, 0), vVector);
-  const Line centreServiceLine = Line(Point2f(5.485, 0), vVector);
-  const Line rightSinglesLine = Line(Point2f(9.6, 0), vVector);
-  const Line rightSideLine = Line(Point2f(10.97, 0), vVector);
+  // const Line leftSinglesLine = Line(Point2f(1.37, 0), vVector);
+  const Line centreServiceLine = Line(Point2f(3.05, 0), vVector);
+  // const Line rightSinglesLine = Line(Point2f(9.6, 0), vVector);
+  const Line rightSideLine = Line(Point2f(6.1, 0), vVector);
   vLines = {
-    leftSideLine, leftSinglesLine, centreServiceLine, rightSinglesLine, rightSideLine
-  };
+      leftSideLine,
+      // leftSinglesLine,
+      centreServiceLine,
+      // rightSinglesLine,
+      rightSideLine};
 
   // TODO do not contrain to only these lines
-//  hLinePairs = getPossibleLinePairs(hLines);
-//  vLinePairs = getPossibleLinePairs(vLines);
+  //  hLinePairs = getPossibleLinePairs(hLines);
+  //  vLinePairs = getPossibleLinePairs(vLines);
   hLinePairs.push_back(std::make_pair(hLines[0], hLines[4]));
   hLinePairs.push_back(std::make_pair(hLines[0], hLines[3]));
   hLinePairs.push_back(std::make_pair(hLines[1], hLines[3]));
   hLinePairs.push_back(std::make_pair(hLines[1], hLines[4]));
 
-
-  vLinePairs.push_back(std::make_pair(vLines[0], vLines[4]));
-  vLinePairs.push_back(std::make_pair(vLines[0], vLines[3]));
-  vLinePairs.push_back(std::make_pair(vLines[1], vLines[4]));
-  vLinePairs.push_back(std::make_pair(vLines[1], vLines[3]));
+  // vLinePairs.push_back(std::make_pair(vLines[0], vLines[4]));
+  // vLinePairs.push_back(std::make_pair(vLines[0], vLines[3]));
+  // vLinePairs.push_back(std::make_pair(vLines[1], vLines[4]));
+  // vLinePairs.push_back(std::make_pair(vLines[1], vLines[3]));
+  vLinePairs.push_back(std::make_pair(vLines[0], vLines[2]));
+  // vLinePairs.push_back(std::make_pair(vLines[0], vLines[1]));
+  // vLinePairs.push_back(std::make_pair(vLines[1], vLines[2]));
 
   Point2f point;
   if (upperBaseLine.computeIntersectionPoint(leftSideLine, point))
@@ -62,62 +70,86 @@ TennisCourtModel::TennisCourtModel()
   }
   if (upperBaseLine.computeIntersectionPoint(rightSideLine, point))
   {
-    courtPoints.push_back(point);  // P4
+    courtPoints.push_back(point); // P4
   }
-  if (upperBaseLine.computeIntersectionPoint(leftSinglesLine, point))
+  if (upperServiceLine.computeIntersectionPoint(leftSideLine, point))
   {
-    courtPoints.push_back(point);  // P5
+    courtPoints.push_back(point); // P5 NEW
   }
-  if (lowerBaseLine.computeIntersectionPoint(leftSinglesLine, point))
+  if (lowerServiceLine.computeIntersectionPoint(leftSideLine, point))
   {
-    courtPoints.push_back(point);  // P6
+    courtPoints.push_back(point); // P6 NEW
   }
-  if (lowerBaseLine.computeIntersectionPoint(rightSinglesLine, point))
+  if (lowerServiceLine.computeIntersectionPoint(rightSideLine, point))
   {
-    courtPoints.push_back(point);  // P7
+    courtPoints.push_back(point); // P7 NEW
   }
-  if (upperBaseLine.computeIntersectionPoint(rightSinglesLine, point))
+  if (upperServiceLine.computeIntersectionPoint(rightSideLine, point))
   {
-    courtPoints.push_back(point);  // P8
+    courtPoints.push_back(point); // P8 NEW
   }
-  if (leftSinglesLine.computeIntersectionPoint(upperServiceLine, point))
+  // if (upperBaseLine.computeIntersectionPoint(leftSinglesLine, point))
+  // {
+  //   courtPoints.push_back(point);  // P5
+  // }
+  // if (lowerBaseLine.computeIntersectionPoint(leftSinglesLine, point))
+  // {
+  //   courtPoints.push_back(point);  // P6
+  // }
+  // if (lowerBaseLine.computeIntersectionPoint(rightSinglesLine, point))
+  // {
+  //   courtPoints.push_back(point);  // P7
+  // }
+  // if (upperBaseLine.computeIntersectionPoint(rightSinglesLine, point))
+  // {
+  //   courtPoints.push_back(point);  // P8
+  // }
+  // if (leftSinglesLine.computeIntersectionPoint(upperServiceLine, point))
+  // {
+  //   courtPoints.push_back(point);  // P9
+  // }
+  // if (rightSinglesLine.computeIntersectionPoint(upperServiceLine, point))
+  // {
+  //   courtPoints.push_back(point);  // P10
+  // }
+  // if (leftSinglesLine.computeIntersectionPoint(lowerServiceLine, point))
+  // {
+  //   courtPoints.push_back(point);  // P11
+  // }
+  // if (rightSinglesLine.computeIntersectionPoint(lowerServiceLine, point))
+  // {
+  //   courtPoints.push_back(point);  // P12
+  // }
+  if (upperBaseLine.computeIntersectionPoint(centreServiceLine, point))
   {
-    courtPoints.push_back(point);  // P9
+    courtPoints.push_back(point); // P9 NEW
   }
-  if (rightSinglesLine.computeIntersectionPoint(upperServiceLine, point))
+  if (lowerBaseLine.computeIntersectionPoint(centreServiceLine, point))
   {
-    courtPoints.push_back(point);  // P10
-  }
-  if (leftSinglesLine.computeIntersectionPoint(lowerServiceLine, point))
-  {
-    courtPoints.push_back(point);  // P11
-  }
-  if (rightSinglesLine.computeIntersectionPoint(lowerServiceLine, point))
-  {
-    courtPoints.push_back(point);  // P12
+    courtPoints.push_back(point); // P10 NEW
   }
   if (upperServiceLine.computeIntersectionPoint(centreServiceLine, point))
   {
-    courtPoints.push_back(point);  // P13
+    courtPoints.push_back(point); // P13, P11 NEW
   }
   if (lowerServiceLine.computeIntersectionPoint(centreServiceLine, point))
   {
-    courtPoints.push_back(point);  // P14
+    courtPoints.push_back(point); // P14, P12 NEW
   }
   if (leftSideLine.computeIntersectionPoint(netLine, point))
   {
-    courtPoints.push_back(point);  // P15
+    courtPoints.push_back(point); // P15, P13 NEW
   }
   if (rightSideLine.computeIntersectionPoint(netLine, point))
   {
-    courtPoints.push_back(point);  // P16
+    courtPoints.push_back(point); // P16, P14 NEW
   }
 
-  assert(courtPoints.size() == 16);
+  assert(courtPoints.size() == 14); // was 16
 }
 
-TennisCourtModel::TennisCourtModel(const TennisCourtModel& o)
-  : transformationMatrix(o.transformationMatrix)
+TennisCourtModel::TennisCourtModel(const TennisCourtModel &o)
+    : transformationMatrix(o.transformationMatrix)
 {
   courtPoints = o.courtPoints;
   hLinePairs = o.hLinePairs;
@@ -126,22 +158,22 @@ TennisCourtModel::TennisCourtModel(const TennisCourtModel& o)
   vLines = o.vLines;
 }
 
-TennisCourtModel& TennisCourtModel::operator=(const TennisCourtModel& o)
+TennisCourtModel &TennisCourtModel::operator=(const TennisCourtModel &o)
 {
   transformationMatrix = o.transformationMatrix;
   return *this;
 }
 
-float TennisCourtModel::fit(const LinePair& hLinePair, const LinePair& vLinePair,
-  const cv::Mat& binaryImage, const cv::Mat& rgbImage)
+float TennisCourtModel::fit(const LinePair &hLinePair, const LinePair &vLinePair,
+                            const cv::Mat &binaryImage, const cv::Mat &rgbImage)
 {
   float bestScore = GlobalParameters().initialFitScore;
   std::vector<Point2f> points = getIntersectionPoints(hLinePair, vLinePair);
-  //TODO Check whether the intersection points make sense
+  // TODO Check whether the intersection points make sense
 
-  for (auto& modelHLinePair: hLinePairs)
+  for (auto &modelHLinePair : hLinePairs)
   {
-    for (auto& modelVLinePair: vLinePairs)
+    for (auto &modelVLinePair : vLinePairs)
     {
       std::vector<Point2f> modelPoints = getIntersectionPoints(modelHLinePair, modelVLinePair);
       Mat matrix = getPerspectiveTransform(modelPoints, points);
@@ -153,17 +185,16 @@ float TennisCourtModel::fit(const LinePair& hLinePair, const LinePair& vLinePair
         bestScore = score;
         transformationMatrix = matrix;
       }
-//      Mat image = rgbImage.clone();
-//      drawModel(transformedModelPoints, image);
-//      displayImage("TennisCourtModel", image, 0);
+      //      Mat image = rgbImage.clone();
+      //      drawModel(transformedModelPoints, image);
+      //      displayImage("TennisCourtModel", image, 0);
     }
   }
   return bestScore;
 }
 
-
-std::vector<cv::Point2f> TennisCourtModel::getIntersectionPoints(const LinePair& hLinePair,
-  const LinePair& vLinePair)
+std::vector<cv::Point2f> TennisCourtModel::getIntersectionPoints(const LinePair &hLinePair,
+                                                                 const LinePair &vLinePair)
 {
   std::vector<Point2f> v;
   Point2f point;
@@ -190,11 +221,11 @@ std::vector<cv::Point2f> TennisCourtModel::getIntersectionPoints(const LinePair&
   return v;
 }
 
-std::vector<LinePair> TennisCourtModel::getPossibleLinePairs(std::vector<Line>& lines)
+std::vector<LinePair> TennisCourtModel::getPossibleLinePairs(std::vector<Line> &lines)
 {
   std::vector<LinePair> linePairs;
   for (size_t first = 0; first < lines.size(); ++first)
-//  for (size_t first = 0; first < 1; ++first)
+  //  for (size_t first = 0; first < 1; ++first)
   {
     for (size_t second = first + 1; second < lines.size(); ++second)
     {
@@ -204,33 +235,33 @@ std::vector<LinePair> TennisCourtModel::getPossibleLinePairs(std::vector<Line>& 
   return linePairs;
 }
 
-
-void TennisCourtModel::drawModel(cv::Mat& image, Scalar color)
+void TennisCourtModel::drawModel(cv::Mat &image, Scalar color)
 {
   std::vector<Point2f> transformedModelPoints(16);
   perspectiveTransform(courtPoints, transformedModelPoints, transformationMatrix);
   drawModel(transformedModelPoints, image, color);
 }
 
-void TennisCourtModel::drawModel(std::vector<Point2f>& courtPoints, Mat& image, Scalar color)
+void TennisCourtModel::drawModel(std::vector<Point2f> &courtPoints, Mat &image, Scalar color)
 {
-  drawLine(courtPoints[0], courtPoints[1], image, color);
+  drawLine(courtPoints[0], courtPoints[1], image, color); // outside
   drawLine(courtPoints[1], courtPoints[2], image, color);
   drawLine(courtPoints[2], courtPoints[3], image, color);
   drawLine(courtPoints[3], courtPoints[0], image, color);
 
-  drawLine(courtPoints[4], courtPoints[5], image, color);
-  drawLine(courtPoints[6], courtPoints[7], image, color);
+  // drawLine(courtPoints[4], courtPoints[5], image, color);
+  // drawLine(courtPoints[6], courtPoints[7], image, color);
+  drawLine(courtPoints[4], courtPoints[7], image, color); // USL, LSL
+  drawLine(courtPoints[5], courtPoints[6], image, color);
 
-  drawLine(courtPoints[8], courtPoints[9], image, color);
-  drawLine(courtPoints[10], courtPoints[11], image, color);
+  drawLine(courtPoints[8], courtPoints[10], image, color); // center lines
+  drawLine(courtPoints[9], courtPoints[11], image, color);
 
-  drawLine(courtPoints[12], courtPoints[13], image, color);
-  drawLine(courtPoints[14], courtPoints[15], image, color);
+  drawLine(courtPoints[12], courtPoints[13], image, color); // net line
+  // drawLine(courtPoints[14], courtPoints[15], image, color);
 }
 
-
-float TennisCourtModel::evaluateModel(const std::vector<cv::Point2f>& courtPoints, const cv::Mat& binaryImage)
+float TennisCourtModel::evaluateModel(const std::vector<cv::Point2f> &courtPoints, const cv::Mat &binaryImage)
 {
   float score = 0;
 
@@ -249,36 +280,41 @@ float TennisCourtModel::evaluateModel(const std::vector<cv::Point2f>& courtPoint
   score += computeScoreForLineSegment(courtPoints[1], courtPoints[2], binaryImage);
   score += computeScoreForLineSegment(courtPoints[2], courtPoints[3], binaryImage);
   score += computeScoreForLineSegment(courtPoints[3], courtPoints[0], binaryImage);
-  score += computeScoreForLineSegment(courtPoints[4], courtPoints[5], binaryImage);
-  score += computeScoreForLineSegment(courtPoints[6], courtPoints[7], binaryImage);
-  score += computeScoreForLineSegment(courtPoints[8], courtPoints[9], binaryImage);
-  score += computeScoreForLineSegment(courtPoints[10], courtPoints[11], binaryImage);
-  score += computeScoreForLineSegment(courtPoints[12], courtPoints[13], binaryImage);
-//  score += computeScoreForLineSegment(courtPoints[14], courtPoints[14], binaryImage);
+  // score += computeScoreForLineSegment(courtPoints[4], courtPoints[5], binaryImage);
+  // score += computeScoreForLineSegment(courtPoints[6], courtPoints[7], binaryImage);
+  score += computeScoreForLineSegment(courtPoints[4], courtPoints[7], binaryImage);
+  score += computeScoreForLineSegment(courtPoints[5], courtPoints[6], binaryImage);
 
-//  std::cout << "Score = " << score << std::endl;
+  // score += computeScoreForLineSegment(courtPoints[8], courtPoints[9], binaryImage);
+  // score += computeScoreForLineSegment(courtPoints[10], courtPoints[11], binaryImage);
+  score += computeScoreForLineSegment(courtPoints[8], courtPoints[10], binaryImage);
+  score += computeScoreForLineSegment(courtPoints[9], courtPoints[11], binaryImage);
+  score += computeScoreForLineSegment(courtPoints[12], courtPoints[13], binaryImage);
+  //  score += computeScoreForLineSegment(courtPoints[14], courtPoints[14], binaryImage);
+
+  // std::cout << "Score = " << score << std::endl;
 
   return score;
 }
 
-float TennisCourtModel::computeScoreForLineSegment(const cv::Point2f& start, const cv::Point2f& end,
-  const cv::Mat& binaryImage)
+float TennisCourtModel::computeScoreForLineSegment(const cv::Point2f &start, const cv::Point2f &end,
+                                                   const cv::Mat &binaryImage)
 {
   float score = 0;
   float fgScore = 1;
   float bgScore = -0.5;
   int length = round(distance(start, end));
 
-  Point2f vec = normalize(end-start);
+  Point2f vec = normalize(end - start);
 
   for (int i = 0; i < length; ++i)
   {
-    Point2f p = start + i*vec;
+    Point2f p = start + i * vec;
     int x = round(p.x);
     int y = round(p.y);
     if (isInsideTheImage(x, y, binaryImage))
     {
-      uchar imageValue = binaryImage.at<uchar>(y,x);
+      uchar imageValue = binaryImage.at<uchar>(y, x);
       if (imageValue == GlobalParameters().fgValue)
       {
         score += fgScore;
@@ -292,13 +328,12 @@ float TennisCourtModel::computeScoreForLineSegment(const cv::Point2f& start, con
   return score;
 }
 
-
-bool TennisCourtModel::isInsideTheImage(float x, float y, const cv::Mat& image)
+bool TennisCourtModel::isInsideTheImage(float x, float y, const cv::Mat &image)
 {
   return (x >= 0 && x < image.cols) && (y >= 0 && y < image.rows);
 }
 
-void TennisCourtModel::writeToFile(const std::string& filename)
+void TennisCourtModel::writeToFile(const std::string &filename)
 {
   std::vector<Point2f> transformedModelPoints(16);
   perspectiveTransform(courtPoints, transformedModelPoints, transformationMatrix);
@@ -308,7 +343,7 @@ void TennisCourtModel::writeToFile(const std::string& filename)
   {
     throw std::runtime_error("Unable to open file: " + filename);
   }
-  for (auto& point: transformedModelPoints)
+  for (auto &point : transformedModelPoints)
   {
     outFile << point.x << ";" << point.y << std::endl;
   }
