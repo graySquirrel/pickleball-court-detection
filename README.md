@@ -33,6 +33,7 @@ Usage: ./detect video_path [output_path]
 This will take in a video, find one frame, and run the algo on it.
 Typical time is around one minute on a MacBook Pro.
 Does not run in real time on all frames... i guess we are assuming that the camera is still for the duration of the video.
+Will fail sometimes when there is alot of other white stuff in the scene, like big text
 ```
 
 ## Output file
