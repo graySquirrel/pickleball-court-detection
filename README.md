@@ -8,6 +8,7 @@ D. et al. "Robust Camera Calibration for Sports Videos using Court Models", *Sto
 Retrieval Methods and Applications for Multimedia 2004*, 2003.
 
 ![AlgorithmResult](tennis-court-detection.png)
+![AlgorithmResult2](pickleball-court-detection.png)
 
 # Installation instructions
 
@@ -30,6 +31,10 @@ Usage: ./detect video_path [output_path]
        video_path:  path to an input avi file.
        output_path: path to an output file where the xy court point coordinates will be written.
                     This argument is optional. If not present, then a window with the result will be opened.
+This will take in a video, find one frame, and run the algo on it.
+Typical time is around one minute on a MacBook Pro.
+Does not run in real time on all frames... i guess we are assuming that the camera is still for the duration of the video.
+Will fail sometimes when there is alot of other white stuff in the scene, like big text
 ```
 
 ## Output file
