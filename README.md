@@ -8,6 +8,7 @@ D. et al. "Robust Camera Calibration for Sports Videos using Court Models", *Sto
 Retrieval Methods and Applications for Multimedia 2004*, 2003.
 
 ![AlgorithmResult](tennis-court-detection.png)
+![AlgorithmResult2](pickleball-court-detection.png)
 
 # Installation instructions
 
