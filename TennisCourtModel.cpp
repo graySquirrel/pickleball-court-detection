@@ -335,7 +335,7 @@ bool TennisCourtModel::isInsideTheImage(float x, float y, const cv::Mat &image)
 
 void TennisCourtModel::writeToFile(const std::string &filename)
 {
-  std::vector<Point2f> transformedModelPoints(16);
+  std::vector<Point2f> transformedModelPoints(14);
   perspectiveTransform(courtPoints, transformedModelPoints, transformationMatrix);
 
   std::ofstream outFile(filename);
@@ -345,6 +345,10 @@ void TennisCourtModel::writeToFile(const std::string &filename)
   }
   for (auto &point : transformedModelPoints)
   {
-    outFile << point.x << ";" << point.y << std::endl;
+    outFile << point.x << "," << point.y << std::endl;
+  }
+  for (auto &point : courtPoints)
+  {
+    outFile << point.x << "," << point.y << std::endl;
   }
 }

@@ -13,17 +13,18 @@ int main(int argc, char **argv)
 {
   //  std::cout << cv::getBuildInformation() << std::endl;
 
-  TimeMeasurement::debug = false;
+  TimeMeasurement::debug = true;
   CourtLinePixelDetector::debug = false;
   CourtLineCandidateDetector::debug = false;
   TennisCourtFitter::debug = false;
 
-  if (argc < 2 || argc > 3)
+  if (argc < 3 || argc > 4)
   {
-    std::cout << "Usage: ./detect video_path [output_path]" << std::endl;
+    std::cout << "Usage: ./detect video_path output_path [seconds]" << std::endl;
     std::cout << "       video_path:  path to an input avi file." << std::endl;
     std::cout << "       output_path: path to an output file where the xy court point coordinates will be written." << std::endl;
     std::cout << "                    This argument is optional. If not present, then a window with the result will be opened." << std::endl;
+    std::cout << "       [seconds]: take frame at <seconds>; default is 20" << std::endl;
     return -1;
   }
   std::string filename(argv[1]);
@@ -37,7 +38,15 @@ int main(int argc, char **argv)
   }
   printVideoInfo(vc);
   Mat frame;
-  int frameIndex = int(vc.get(CAP_PROP_FRAME_COUNT)) / 2;
+  int fps = int(vc.get(CAP_PROP_FPS));
+  int inputSeconds = 20;
+  if (argc == 4)
+  {
+    long arg = strtol(argv[3], NULL, 10);
+    inputSeconds = int(arg);
+  }
+  // int frameIndex = int(vc.get(CAP_PROP_FRAME_COUNT)) / 2;
+  int frameIndex = int(inputSeconds * fps);
   vc.set(CAP_PROP_POS_FRAMES, frameIndex);
   if (!vc.read(frame))
   {
@@ -59,17 +68,12 @@ int main(int argc, char **argv)
     TennisCourtModel model = tennisCourtFitter.run(candidateLines, binaryImage, frame);
     int elapsed_seconds = TimeMeasurement::stop("LineDetection");
     std::cout << "Elapsed time: " << elapsed_seconds << "s." << std::endl;
-    if (argc == 2)
-    {
-      model.drawModel(frame);
-      displayImage("Result - press key to exit", frame);
-    }
-    else if (argc == 3)
-    {
-      std::string outFilename(argv[2]);
-      model.writeToFile(outFilename);
-      std::cout << "Result written to " << outFilename << std::endl;
-    }
+    model.drawModel(frame);
+    displayImage("Result - press key to exit", frame);
+
+    std::string outFilename(argv[2]);
+    model.writeToFile(outFilename);
+    std::cout << "Result written to " << outFilename << std::endl;
   }
   catch (std::runtime_error &e)
   {
