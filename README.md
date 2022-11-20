@@ -42,25 +42,22 @@ Also, it will pick a frame in the middle of the video to do the detection on, as
 
 ## Output file
 
-The output file contains one point per line. The XY coordinates are separated by a
-semicolon ";".  The points are in the following order:
+The output file contains 2 parts: image domain points and orthogonal domain points.  There are 14 points in each part that describe the pickleball court, one point per line. The XY coordinates are separated by a comma.  The points are in the following order:
 
 ```
 1.  Intersection of the upper base line with the left side line
 2.  Intersection of the lower base line with the left side line
 3.  Intersection of the lower base line with the right side line
 4.  Intersection of the upper base line with the right side line
-5.  Intersection of the upper base line with the left singles line
-6.  Intersection of the lower base line with the left singles line
-7.  Intersection of the lower base line with the right singles line
-8.  Intersection of the upper base line with the right singles line
-9.  Intersection of the left singles line with the upper service line
-10. Intersection of the right singles line with the upper service line
-11. Intersection of the left singles line with the lower service line
-12. Intersection of the right singles line with the lower service line
-13. Intersection of the upper service line with the center service line
-14. Intersection of the lower service line with the center service line
-15. Intersection of the left side line with the net line
-16. Intersection of the right side line with the net line
+5.  Intersection of the upper service line with the left side line
+6.  Intersection of the lower service line with the left side line
+7.  Intersection of the lower service line with the right side line
+8.  Intersection of the upper service line with the right side line
+9.  Intersection of the upper base line with center service line
+10. Intersection of the lower base line with the center service line
+11. Intersection of the upper service line with the center service line
+12. Intersection of the lower service line with the center service line
+13. Intersection of the left side line with the net line
+14. Intersection of the right side with the net line
 ```
-
+The analyzed frame is put out on the current directory called testframe.png
