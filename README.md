@@ -27,16 +27,14 @@ The detection algorithm is started for the middle frame of the input video file 
 format).
 
 ```
-Usage: ./detect video_path [output_path]
+Usage: ./detect video_path output_path seconds
        video_path:  path to an input avi file.
        output_path: path to an output file where the xy court point coordinates will be written.
-                    This argument is optional. If not present, then a window with the result will be opened.
-This will take in a video, find one frame, and run the algo on it.
+       seconds: time at which the test frame will be taken.  
+This will take in a video, find the one frame at 'seconds' seconds, and run the algo on it.
 Typical time is around one minute on a MacBook Pro.
 Does not run in real time on all frames... i guess we are assuming that the camera is still for the duration of the video.
 Will fail sometimes when there is alot of other white stuff in the scene, like big text.
-
-Also, it will pick a frame in the middle of the video to do the detection on, assuming that there may be some startup banner stuff.
 
 ```
 
