@@ -27,40 +27,35 @@ The detection algorithm is started for the middle frame of the input video file 
 format).
 
 ```
-Usage: ./detect video_path [output_path]
+Usage: ./detect video_path output_path seconds
        video_path:  path to an input avi file.
        output_path: path to an output file where the xy court point coordinates will be written.
-                    This argument is optional. If not present, then a window with the result will be opened.
-This will take in a video, find one frame, and run the algo on it.
+       seconds: time at which the test frame will be taken.  
+This will take in a video, find the one frame at 'seconds' seconds, and run the algo on it.
 Typical time is around one minute on a MacBook Pro.
 Does not run in real time on all frames... i guess we are assuming that the camera is still for the duration of the video.
 Will fail sometimes when there is alot of other white stuff in the scene, like big text.
-
-Also, it will pick a frame in the middle of the video to do the detection on, assuming that there may be some startup banner stuff.
 
 ```
 
 ## Output file
 
-The output file contains one point per line. The XY coordinates are separated by a
-semicolon ";".  The points are in the following order:
+The output file contains 2 parts: image domain points and orthogonal domain points.  There are 14 points in each part that describe the pickleball court, one point per line. The XY coordinates are separated by a comma.  The points are in the following order:
 
 ```
 1.  Intersection of the upper base line with the left side line
 2.  Intersection of the lower base line with the left side line
 3.  Intersection of the lower base line with the right side line
 4.  Intersection of the upper base line with the right side line
-5.  Intersection of the upper base line with the left singles line
-6.  Intersection of the lower base line with the left singles line
-7.  Intersection of the lower base line with the right singles line
-8.  Intersection of the upper base line with the right singles line
-9.  Intersection of the left singles line with the upper service line
-10. Intersection of the right singles line with the upper service line
-11. Intersection of the left singles line with the lower service line
-12. Intersection of the right singles line with the lower service line
-13. Intersection of the upper service line with the center service line
-14. Intersection of the lower service line with the center service line
-15. Intersection of the left side line with the net line
-16. Intersection of the right side line with the net line
+5.  Intersection of the upper service line with the left side line
+6.  Intersection of the lower service line with the left side line
+7.  Intersection of the lower service line with the right side line
+8.  Intersection of the upper service line with the right side line
+9.  Intersection of the upper base line with center service line
+10. Intersection of the lower base line with the center service line
+11. Intersection of the upper service line with the center service line
+12. Intersection of the lower service line with the center service line
+13. Intersection of the left side line with the net line
+14. Intersection of the right side with the net line
 ```
-
+The analyzed frame is put out on the current directory called testframe.png
