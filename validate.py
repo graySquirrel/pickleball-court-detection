@@ -4,7 +4,8 @@ import csv
 
 #print(cv2.__version__)
 # TODO argparse
-videofile = "../vids/ProSenior_00_05_27-40.mp4"
+#videofile = "../vids/ProSenior_00_05_27-40.mp4"
+videofile = "../vids/prosenlong111639.mp4"
 framefile = "testframe.png"
 datfile = "court.txt"
 ##
@@ -114,6 +115,8 @@ def getoutbounds(orthpts, imgpts):
     src = np.zeros((len(testpts), 1, 2))
     src[:, 0] = testpts
     outpts = cv2.perspectiveTransform(src, resmatrix)
+    outpts = outpts[:,0,:]
+    print('bounds', outpts)
     return(outpts)
 #########################################################################
 # make an image mask of the points made from getoutbounds()
@@ -121,6 +124,14 @@ def getMask(framefile, shape):
     img = cv2.imread(framefile)
     themask = np.ones([img.shape[0],img.shape[1]], dtype='uint8')
     points = np.array(shape, dtype='int')
+    print(points)
+    toppoint = [[points[0][0],0]]
+    print(toppoint)
+    bottompoint = [[points[3][0],0]]
+    print(bottompoint)
+    points = np.append(toppoint, points, axis=0)
+    points = np.append(points, bottompoint, axis=0)
+    print(points)
     cv2.fillPoly(themask, pts=[points], color=([255]))
     return themask
 #########################################################################
@@ -129,6 +140,7 @@ pts, intpts, orthpts = getpoints(datfile)
 # get the court extent
 boundspoints = getoutbounds(orthpts, pts)
 # make a mask to encode it
+# alter to don't mask the back part of the court
 outmask = getMask(framefile, boundspoints)
 cv2.imwrite("mask.png",outmask)
 # get the initial max vals from each of 14 court points
@@ -143,7 +155,6 @@ framemetadata = []
 cap = cv2.VideoCapture(videofile)
 framenum = 0
 while True:
-    framenum += 1
     conf = 0
     ret, frame = cap.read()
     if ret == False:
@@ -151,13 +162,16 @@ while True:
     gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
     conf = getConf(gray, targmaxes, intpts)
     #print('conf',conf)
-    if conf > 0.85:
-        frame = drawCourtLines(frame, intpts)
+    #if conf > 0.85:
+    #    frame = drawCourtLines(frame, intpts)
     framemetadata.append([framenum, conf])
-    cv2.imshow("the img", frame)
+    framenum += 1
+    #cv2.imshow("the img", frame)
     # change waitkey to 0 if you want to wait for input to advance.
-    if cv2.waitKey(1) & 0xFF == ord('q'):
-        break
+    #if cv2.waitKey(1) & 0xFF == ord('q'):
+    #    break
+    if framenum % 100 == 0:
+        print(framenum)
 cap.release()
 cv2.destroyAllWindows()
 # write metadata file

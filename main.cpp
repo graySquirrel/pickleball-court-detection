@@ -68,8 +68,11 @@ int main(int argc, char **argv)
     TennisCourtModel model = tennisCourtFitter.run(candidateLines, binaryImage, frame);
     int elapsed_seconds = TimeMeasurement::stop("LineDetection");
     std::cout << "Elapsed time: " << elapsed_seconds << "s." << std::endl;
+    imwrite("testframe.png", frame); // write out the frame before marking
+
     model.drawModel(frame);
     displayImage("Result - press key to exit", frame);
+    imwrite("testframeWithLines.png", frame); // write out the frame before marking
 
     std::string outFilename(argv[2]);
     model.writeToFile(outFilename);
