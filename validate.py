@@ -5,18 +5,17 @@ import csv
 #print(cv2.__version__)
 # TODO argparse
 #videofile = "../vids/ProSenior_00_05_27-40.mp4"
-videofile = "../vids/prosenlong111639.mp4"
+videofile = "/home/vboxuser/share/ProSenior_00:05:27_20.mp4"
 framefile = "testframe.png"
 datfile = "court.txt"
 ##
 # validate.py will do the following:
 # 1. get the perspective projection btw image coords and orthogonal coords of a pickleball court.
 #       Then it will expand the court by 2.5 meters, and project into image coords.
-#       Then it will create an image mask of these coords and write the mask out as mask.png
-# 2. read in a testframe.png (the frame used to create the court model), and mark it with lines.
-#       Then write it out as testframeWithLines.png
+#       Then it will create an image mask of these coords and write the mask out as 'mask.png'
+# 2. read in a testframe.png (the frame used to create the court model), and output a file called "target.csv" which prints the max color in each of the 14 points on the court.
 # 3. read the video, and for each frame, output a confidence of if the court is in the expected place.
-#       Then write it out as frameMetaData.txt
+#       Then write it out as 'courtConf.csv'
 #########################################################################
 # gets the max in a 11x11 window around each of the 14 court points.
 win = 5

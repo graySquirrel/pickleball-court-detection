@@ -58,4 +58,9 @@ see here for tiny explain. https://syntaxbug.com/67a29b1f89/
 cmake ..
 cmake --build . -v
 
+####### For python stuff... run cmds.txt command to loop through what needs to be installed.
+sudo pip install numpy
+sudo pip install opencv-python
+
+
 
