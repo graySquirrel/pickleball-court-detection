@@ -1,0 +1,14 @@
+## how to run detect and validate.py
+
+cd build/bin
+./detect /home/vboxuser/share/ProSenior_00:05:27_20.mp4 court.txt 10
+
+# runs for 200ish sec, 3.3 min on 22.04 guest on Macbook pro host.
+edit validate.py to point to the proper files.
+
+then run it from the same bin dir
+
+python3 ../../validate.py
+
+
+
