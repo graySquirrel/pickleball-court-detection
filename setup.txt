@@ -1,4 +1,12 @@
 install ubuntu 22.04
+install parallels toolkit
+
+# May have to
+su root
+adduser vboxuser sudo
+chmod 0440 /etc/sudoers
+exit
+
 sudo apt install git
 mkdir pickle
 cd pickle
