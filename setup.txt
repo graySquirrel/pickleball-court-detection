@@ -1,0 +1,42 @@
+install ubuntu 22.04
+sudo apt install git
+mkdir pickle
+cd pickle
+git clone https://github.com/graySquirrel/pickleball-court-detection
+
+download miniconda from site
+cd ~/Downloads
+chmod +x Miniconda3-latest-Linux-x86_64.sh 
+./Miniconda3-latest-Linux-x86_64.sh 
+restart terminal
+conda create --name myenv
+conda activate myenv
+sudo apt install python3-pip
+sudo pip install conan
+
+cd pickle/pickleball-court-detection
+
+sudo apt install -y libgtk2.0-dev
+sudo apt install -y libva-dev
+sudo apt install -y libvdpau-dev
+sudo apt install -y libx11-xcb-dev libfontenc-dev libxaw7-dev libxkbfile-dev libxmu-dev libxmuu-dev libxpm-dev libxres-dev libxss-dev libxt-dev libxtst-dev libxv-dev libxvmc-dev libxxf86vm-dev libxcb-render-util0-dev libxcb-xkb-dev libxcb-icccm4-dev libxcb-image0-dev libxcb-keysyms1-dev libxcb-randr0-dev libxcb-shape0-dev libxcb-sync-dev libxcb-xfixes0-dev libxcb-xinerama0-dev libxcb-dri3-dev
+sudo apt install -y libxcb-util-dev libxcb-util0-dev
+
+sudo apt install -y cmake
+
+sudo apt-get install libunistring-dev
+sudo apt install libgnutls28-dev
+sudo apt install -y libopenjp2-7-dev
+#sudo apt install -y ffmpeg
+#sudo apt install -y libx265-dev
+#sudo apt install -y x265
+
+#export PKG_CONFIG_PATH="/usr/local/lib/pkgconfig"
+
+cd build
+conan install .. --build missing --build=openjpeg --build=libx264 --build=libx265
+
+
+
+
+
