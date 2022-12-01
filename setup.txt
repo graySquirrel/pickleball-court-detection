@@ -1,6 +1,6 @@
 install ubuntu 22.04
 install parallels toolkit  or the virtualbox guest additions
-# for virtualbox, have to mount the CD, then in terminal go to /media/.. and run the autorun script.
+# for virtualbox, have to mount the CD (Go to 'Devices' menu at top and select "Insert Guest Addition CD image", then in terminal go to /media/.. and run the autorun script.
 
 # May have to
 su root
@@ -27,7 +27,7 @@ cd pickle
 git clone https://github.com/graySquirrel/pickleball-court-detection
 
 
-sudo apt install python3-pip
+sudo apt install -y python3-pip
 sudo pip install conan
 
 cd pickle/pickleball-court-detection
@@ -40,19 +40,22 @@ sudo apt install -y libxcb-util-dev libxcb-util0-dev
 
 sudo apt install -y cmake
 
-sudo apt-get install libunistring-dev
-sudo apt install libgnutls28-dev
-sudo apt install -y libopenjp2-7-dev
-#sudo apt install -y ffmpeg
-#sudo apt install -y libx265-dev
-#sudo apt install -y x265
-
-#export PKG_CONFIG_PATH="/usr/local/lib/pkgconfig"
-
+mkdir build
 cd build
 conan install .. --build missing --build=openjpeg --build=libx264 --build=libx265
+cmake ..
+cmake --build . -v
 
+### Uh, funky stuff.
+sudo vi /usr/include/x86_64-linux-gnu/c++/11/bits/c++config.h
+search on # define _GLIBCXX_USE_CXX11_ABI 1
+change the 1 to a 0 so it looks like
+# define _GLIBCXX_USE_CXX11_ABI 0
 
+This has to do with some mismatch between defn of c++ function defns.
+see here for tiny explain. https://syntaxbug.com/67a29b1f89/
 
+cmake ..
+cmake --build . -v
 
 
