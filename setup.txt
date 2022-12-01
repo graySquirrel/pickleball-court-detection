@@ -8,6 +8,14 @@ adduser vboxuser sudo
 chmod 0440 /etc/sudoers
 exit
 
+download miniconda from site
+cd ~/Downloads
+chmod +x Miniconda3-latest-Linux-x86_64.sh 
+./Miniconda3-latest-Linux-x86_64.sh 
+restart terminal
+conda create --name myenv
+conda activate myenv
+
 sudo apt install git
 ## Make a new PAT on github for your computer.
 conda install gh --channel conda-forge
@@ -18,13 +26,7 @@ mkdir pickle
 cd pickle
 git clone https://github.com/graySquirrel/pickleball-court-detection
 
-download miniconda from site
-cd ~/Downloads
-chmod +x Miniconda3-latest-Linux-x86_64.sh 
-./Miniconda3-latest-Linux-x86_64.sh 
-restart terminal
-conda create --name myenv
-conda activate myenv
+
 sudo apt install python3-pip
 sudo pip install conan
 
