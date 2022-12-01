@@ -1,5 +1,6 @@
 install ubuntu 22.04
-install parallels toolkit
+install parallels toolkit  or the virtualbox guest additions
+# for virtualbox, have to mount the CD, then in terminal go to /media/.. and run the autorun script.
 
 # May have to
 su root
@@ -8,6 +9,11 @@ chmod 0440 /etc/sudoers
 exit
 
 sudo apt install git
+## Make a new PAT on github for your computer.
+conda install gh --channel conda-forge
+gh auth login
+# this will prompt you to enter the info.
+  
 mkdir pickle
 cd pickle
 git clone https://github.com/graySquirrel/pickleball-court-detection
