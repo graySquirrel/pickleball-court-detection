@@ -24,5 +24,5 @@ CMD [ "./data/input.mp4", "./data", "10" ]
 ## docker build -t detect .
 ## run with
 ## docker run --rm -v ~/detect-data:/pickleball-court-detection/build/data detect:latest
-## interactive
+## interactive: comment out ENTRYPOINT and CMD and rebuild, then do following
 ## docker run -v ~/detect-data:/pickleball-court-detection/build/data -i -t detect bash
