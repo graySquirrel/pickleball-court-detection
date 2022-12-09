@@ -1,0 +1,59 @@
+# Step 1: get a video
+# Step 1a: make a new folder for your results and put the video there
+mkdir short40sec # then cp the video there.
+mkdir longVid # this is a long version of the short40sec, so we'll use same court.txt, testframe.png
+# Step 2: run detect: detect <input video> <output text file for court pos> <use frame at N seconds>
+## Currently this runs on mac, but not on big PC.  Had trouble building it on 18.04 LTS.
+# from ~/pickle/pickleball-court-validation run
+../pickleball-court-detection/build/bin/detect ../vids/ProSenior_00_05_27-40.mp4 court.txt 4
+# output is: 
+# court.txt: position of 14 points on the court, first in image coords, then in meters birdseye view
+# testframe.png: the frame that was grabbed from the video for court detection
+# scp court.txt and testframe.png to the big PC
+# on big PC go to ~/courtPlusByteTrack/short40sec
+# Step 3: run validate: python validate.py <input video>.  Also expects to find testframe.png and court.txt in cwd
+python ../validate.py ProSenior_00_05_27-40.mp4 # from short40sec dir
+python ../validate.py longVid.mp4 # from the longVid dir
+# output is:
+# mask.png: an image mask that masks out the non-court areas
+# target.csv: a list of 14 points describing the max grayscale value of each detected point on the test frame.
+# courtConf.csv: a confidence estimate for each frame of whether the detected court is in the image or not
+#
+# Step 4: run bytetrack (on big PC)
+# make sure you are in the conda ByteTrack environment
+conda activate ByteTrack # if not already there.
+# you are in the datadir e.g. short40sec
+python ../demo_track_pbcourt.py video -f ~/ByteTrack/exps/example/mot/yolox_s_mix_det.py -c ~/ByteTrack/models/bytetrack_s_mot17.pth.tar --path ProSenior_00_05_27-40.mp4 --fp16 --fuse --save_result -cc courtConf.csv  -mask mask.png -map court.txt
+## from longVid dir
+python ../demo_track_pbcourt.py video -f ~/ByteTrack/exps/example/mot/yolox_s_mix_det.py -c ~/ByteTrack/models/bytetrack_s_mot17.pth.tar --path longVid.mp4 --fp16 --fuse --save_result -cc courtConf.csv  -mask mask.png -map court.txt
+
+#
+# output is:
+# byteTrackPbcourt.mp4 the video with some annotations added for court position and bounding boxes of players
+# rawDetectionsIds.txt  contains one row for frame/ID combination and its bounding box
+# detectionsIds_peeps.txt  contains one row per frame of the 4 players in ortho space (meters) 0s if not detected
+#
+# Step 5: run tracknet2 (on big PC)
+# make sure you are in the venv tracknet2 environment
+source ~/tracknet2/bin/activate
+cd /home/fritz/test_tracknet2/TrackNetv2/3_in_3_out
+python3 predict3.py --video_name="/home/fritz/courtPlusByteTrack/short40sec/ProSenior_00_05_27-40.mp4" --load_weights="model906_30"
+## with longVid video
+python3 predict3.py --video_name="/home/fritz/courtPlusByteTrack/longVid/longVid.mp4" --load_weights="model906_30"
+# output is:
+# ProSenior_00_05_27-40_predict.mp4 an annotated video just showing where it found the ball
+# ProSenior_00_05_27-40_predict.csv one row per frame where the ball is and confidence
+#
+# Step 6: run show_trajectory finally to create the anotated final video.
+# cd back to the datadir e.g. short40sec
+# input is the video output from ByteTrack (byteTrackPbcourt.mp4)
+# and the ball prediction from TrackNet (ProSenior_00_05_27-40_predict.csv)
+# and the start frame (in case we want to look at a particular point.)
+python ../show_trajectory_bounce.py byteTrackPbcourt.mp4 ProSenior_00_05_27-40_predict.csv courtConf.csv detectionsIds_peeps.txt 1
+## with longVid, go to the longVid dir
+python ../show_trajectory_bounce.py byteTrackPbcourt.mp4 longVid_predict.csv courtConf.csv detectionsIds_peeps.txt 1
+#
+# output is byteTrackPbcourt_trajectory.mp4 which has all the realtime stats baked into the video.
+## TODO:
+# make csv for metadata to describe stats that i want to put onto time series vis below image in a custom viewer.
+# stats: ballInPlay, inServicePosition
