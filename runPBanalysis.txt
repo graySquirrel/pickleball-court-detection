@@ -2,13 +2,15 @@
 # Step 1a: make a new folder for your results and put the video there
 mkdir short40sec # then cp the video there.
 mkdir longVid # this is a long version of the short40sec, so we'll use same court.txt, testframe.png
-# Step 2: run detect: detect <input video> <output text file for court pos> <use frame at N seconds>
+# Step 2: run detect: 
+#  detect <input video> <output path where files are written> <use frame at N seconds>
 ## Currently this runs on mac, but not on big PC.  Had trouble building it on 18.04 LTS.
 # from ~/pickle/pickleball-court-validation run
-../pickleball-court-detection/build/bin/detect ../vids/ProSenior_00_05_27-40.mp4 court.txt 4
+../pickleball-court-detection/build/bin/detect ../vids/ProSenior_00_05_27-40.mp4 . 4
 # output is: 
-# court.txt: position of 14 points on the court, first in image coords, then in meters birdseye view
-# testframe.png: the frame that was grabbed from the video for court detection
+# ./court.txt: pos of 14 points on court, first in image coords, then in meters birdseye view
+# ./testframe.png: the frame that was grabbed from the video for court detection
+# ./testframeWithLines.png: the frame that was grabbed from the video for court detection
 # scp court.txt and testframe.png to the big PC
 # on big PC go to ~/courtPlusByteTrack/short40sec
 # Step 3: run validate: python validate.py <input video>.  Also expects to find testframe.png and court.txt in cwd
