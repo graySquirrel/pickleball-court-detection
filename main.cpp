@@ -28,6 +28,7 @@ int main(int argc, char **argv)
     return -1;
   }
   std::string filename(argv[1]);
+  std::string outpath(argv[2]);
 
   std::cout << "Reading file " << filename << std::endl;
   VideoCapture vc(filename);
@@ -68,13 +69,18 @@ int main(int argc, char **argv)
     TennisCourtModel model = tennisCourtFitter.run(candidateLines, binaryImage, frame);
     int elapsed_seconds = TimeMeasurement::stop("LineDetection");
     std::cout << "Elapsed time: " << elapsed_seconds << "s." << std::endl;
-    imwrite("testframe.png", frame); // write out the frame before marking
+    std::string outFilename;
+    outFilename = outpath + "/testframe.png";
+    imwrite(outFilename, frame); // write out the frame before marking
+    //imwrite("testframe.png", frame); // write out the frame before marking
 
     model.drawModel(frame);
-    displayImage("Result - press key to exit", frame);
-    imwrite("testframeWithLines.png", frame); // write out the frame before marking
+    //displayImage("Result - press key to exit", frame);
+    outFilename = outpath + "/testframeWithLines.png";
+    imwrite(outFilename, frame); // write out the frame before marking
+    //imwrite("testframeWithLines.png", frame); // write out the frame before marking
 
-    std::string outFilename(argv[2]);
+    outFilename = outpath + "/court.txt";
     model.writeToFile(outFilename);
     std::cout << "Result written to " << outFilename << std::endl;
   }
