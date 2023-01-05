@@ -18,43 +18,43 @@ int main(int argc, char **argv)
   CourtLineCandidateDetector::debug = false;
   TennisCourtFitter::debug = false;
 
-  if (argc < 3 || argc > 4)
+  if (argc != 3)
   {
-    std::cout << "Usage: ./detect video_path output_path [seconds]" << std::endl;
-    std::cout << "       video_path:  path to an input avi file." << std::endl;
-    std::cout << "       output_path: path to an output file where the xy court point coordinates will be written." << std::endl;
-    std::cout << "                    This argument is optional. If not present, then a window with the result will be opened." << std::endl;
-    std::cout << "       [seconds]: take frame at <seconds>; default is 20" << std::endl;
+    std::cout << "Usage: ./detect image_path output_path" << std::endl;
+    std::cout << "       image_path:  path to an input image file." << std::endl;
+    std::cout << "       output_path: path to where to write the output files" << std::endl;
+    std::cout << "            		testframe.png, testframeWithLines.png, and court.txt" << std::endl;
     return -1;
   }
   std::string filename(argv[1]);
   std::string outpath(argv[2]);
 
   std::cout << "Reading file " << filename << std::endl;
-  VideoCapture vc(filename);
-  if (!vc.isOpened())
-  {
-    std::cerr << "Cannot open file " << filename << std::endl;
-    return 1;
-  }
-  printVideoInfo(vc);
-  Mat frame;
-  int fps = int(vc.get(CAP_PROP_FPS));
-  int inputSeconds = 20;
-  if (argc == 4)
-  {
-    long arg = strtol(argv[3], NULL, 10);
-    inputSeconds = int(arg);
-  }
+  //VideoCapture vc(filename);
+  //if (!vc.isOpened())
+  //{
+  //  std::cerr << "Cannot open file " << filename << std::endl;
+  //  return 1;
+  //}
+  //printVideoInfo(vc);
+  Mat frame = imread(filename, IMREAD_COLOR);
+  //int fps = int(vc.get(CAP_PROP_FPS));
+  //int inputSeconds = 20;
+  //if (argc == 4)
+  //{
+  //  long arg = strtol(argv[3], NULL, 10);
+  //  inputSeconds = int(arg);
+  //}
   // int frameIndex = int(vc.get(CAP_PROP_FRAME_COUNT)) / 2;
-  int frameIndex = int(inputSeconds * fps);
-  vc.set(CAP_PROP_POS_FRAMES, frameIndex);
-  if (!vc.read(frame))
+  //int frameIndex = int(inputSeconds * fps);
+  //vc.set(CAP_PROP_POS_FRAMES, frameIndex);
+  //if (!vc.read(frame))
+  if (frame.empty())
   {
-    std::cerr << "Failed to read frame with index " << frameIndex << std::endl;
+    std::cerr << "Failed to read image " << filename << std::endl;
     return 2;
   }
-  std::cout << "Reading frame with index " << frameIndex << std::endl;
+  //std::cout << "Reading frame with index " << frameIndex << std::endl;
 
   CourtLinePixelDetector courtLinePixelDetector;
   CourtLineCandidateDetector courtLineCandidateDetector;
