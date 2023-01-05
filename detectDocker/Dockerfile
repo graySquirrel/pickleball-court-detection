@@ -22,6 +22,7 @@ CMD [ "./data/input.jpg", "./data" ]
 
 ## build with (in the dir with this dockerfile)
 ## docker build -t detect .
+## if changed code, have to run with --no-cache - i guess it doesn't diff the git layer or i didnt set it up properly.
 ## run with
 ## docker run --rm -v ~/detect-data:/pickleball-court-detection/build/data detect:latest
 ## interactive: comment out ENTRYPOINT and CMD and rebuild, then do following
