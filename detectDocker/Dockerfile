@@ -18,7 +18,7 @@ VOLUME [ "/pickleball-court-detection/build/data" ]
 
 ENTRYPOINT ["./bin/detect" ]
 
-CMD [ "./data/input.mp4", "./data", "10" ]
+CMD [ "./data/input.jpg", "./data" ]
 
 ## build with (in the dir with this dockerfile)
 ## docker build -t detect .
